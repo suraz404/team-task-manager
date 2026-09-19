@@ -61,6 +61,10 @@ export async function createTaskController(
   try {
     const task = await addTask(req.body.title);
 
+    const userId = req.user?.userId;
+
+    console.log("Authenticated user:", userId);
+
     return res.status(201).json({
       success: true,
       message: "Task created successfully",

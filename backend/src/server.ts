@@ -1,5 +1,6 @@
 import express from "express";
 import type { Request, Response } from "express";
+import cors from "cors";
 import "dotenv/config";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import router from "./modules/tasks/task.route.js"; //taskroute
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 8000;
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 // Routes
 app.use("/api/tasks", router);
