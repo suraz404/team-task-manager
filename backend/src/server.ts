@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import "dotenv/config";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import router from "./modules/tasks/task.route.js"; //taskroute
+import authRoutes from "./modules/auth/auth.routes.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/tasks", router);
+app.use("/api/auth", authRoutes);
 
 // Basic test route
 app.get("/api/hello", (req: Request, res: Response) => {
@@ -27,6 +29,7 @@ app.get("/api/status", (req: Request, res: Response) => {
     message: "Server is running",
   });
 });
+
 app.use(errorMiddleware);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
