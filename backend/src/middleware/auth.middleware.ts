@@ -19,25 +19,23 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
       throw new AppError("Authentication required", 401);
     }
 
-    const [scheme, token] = authHeader.split(" ");
+    const [scheme, token, ...extraParts] = authHeader.trim().split(/\s+/);
 
-    if (scheme !== "Bearer" || !token) {
+    if (scheme !== "Bearer" || !token || extraParts.length > 0) {
       throw new AppError("Invalid authorization header", 401);
     }
 
     const decoded = jwt.verify(token, JWT_SECRET!) as AuthPayload;
 
-    if (!decoded) {
-      throw new AppError("INvalid jwt token", 456);
-    }
-
     const userId = Number(decoded.sub);
+
+    if (!decoded.sub || !Number.isInteger(userId) || userId <= 0) {
+      throw new AppError("Invalid token subject", 401);
+    }
 
     req.user = {
       userId,
     };
-
-    console.log("req.user:", req.user);
 
     next();
   } catch (error) {
