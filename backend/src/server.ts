@@ -5,6 +5,7 @@ import "dotenv/config";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import router from "./modules/tasks/task.route.js"; //taskroute
 import authRoutes from "./modules/auth/auth.routes.js";
+import projectRouter from "./modules/projects/project.routes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors());
 // Routes
 app.use("/api/tasks", router);
 app.use("/api/auth", authRoutes);
+app.use("/api/projects", projectRouter);
 
 // Basic test route
 app.get("/api/hello", (req: Request, res: Response) => {

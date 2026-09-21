@@ -15,6 +15,17 @@ export function errorMiddleware(
   }
 
   console.error(err);
+  if (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    err.code === "23505"
+  ) {
+    return res.status(409).json({
+      success: false,
+      error: "Project with this name already exists",
+    });
+  }
 
   return res.status(500).json({
     success: false,
