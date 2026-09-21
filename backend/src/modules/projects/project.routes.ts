@@ -4,10 +4,12 @@ import { authenticate } from "../../middleware/auth.middleware.js";
 
 import { validate } from "../../middleware/validate.middleware.js";
 
-import { createProjectSchema } from "./project.validation.js";
+import { addMemberSchema, createProjectSchema } from "./project.validation.js";
 
 import {
+  addMemberController,
   createProjectController,
+  getProjectMembersController,
   getProjectsController,
   getProjectsControllerById,
 } from "./project.controller.js";
@@ -33,3 +35,16 @@ projectRouter.get(
   getProjectsControllerById,
 );
 export default projectRouter;
+
+projectRouter.post(
+  "/:projectId/members",
+  authenticate,
+  validate(addMemberSchema),
+  addMemberController,
+);
+
+projectRouter.get(
+  "/:projectId/members",
+  authenticate,
+  getProjectMembersController,
+);

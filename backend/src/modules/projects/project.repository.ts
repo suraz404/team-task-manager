@@ -64,3 +64,54 @@ export async function findProjectById(projectId: number, userId: number) {
 
   return result.rows[0];
 }
+export async function findProjectMemberRole(projectId: number, userId: number) {
+  const result = await pool.query(
+    `
+    SELECT role
+    FROM project_members
+    WHERE project_id = $1
+      AND user_id = $2
+    `,
+    [projectId, userId],
+  );
+
+  return result.rows[0];
+}
+
+export async function addProjectMember(
+  projectId: number,
+  userId: number,
+  role: string,
+) {
+  const result = await pool.query(
+    `
+    INSERT INTO project_members (
+      project_id,
+      user_id,
+      role
+    )
+    VALUES ($1, $2, $3)
+    RETURNING *
+    `,
+    [projectId, userId, role],
+  );
+
+  return result.rows[0];
+}
+export async function findProjectMembers(projectId: number) {
+  const result = await pool.query(
+    `
+    SELECT
+      users.id,
+      users.email,
+      project_members.role
+    FROM users
+    INNER JOIN project_members
+      ON users.id = project_members.user_id
+    WHERE project_members.project_id = $1
+    `,
+    [projectId],
+  );
+
+  return result.rows;
+}

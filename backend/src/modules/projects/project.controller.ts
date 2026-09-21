@@ -1,7 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 
 import { AppError } from "../../utils/AppError.js";
-import { addProject, getProjectById } from "./project.services.js";
+import {
+  addMemberToProject,
+  addProject,
+  getProjectById,
+  getProjectMembers,
+} from "./project.services.js";
 import { getUserProjects } from "./project.services.js";
 
 export async function createProjectController(
@@ -59,6 +64,56 @@ export async function getProjectsControllerById(
     }
     const project = await getProjectById(projectId, userId);
     return res.status(200).json({ success: true, data: project });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function addMemberController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const projectId = Number(req.params.projectId);
+    if (Number.isNaN(projectId)) {
+      throw new AppError("Invalid project ID", 400);
+    }
+    const userId = req.user?.userId;
+    if (!userId) {
+      throw new AppError("Authentication required", 401);
+    }
+    const newUserId = req.body.userId;
+    const role = req.body.role;
+    const data = await addMemberToProject(projectId, userId, newUserId, role);
+    return res.status(201).json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}
+export async function getProjectMembersController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const projectId = Number(req.params.projectId);
+    const userId = req.user?.userId;
+
+    if (Number.isNaN(projectId)) {
+      throw new AppError("Invalid project ID", 400);
+    }
+
+    if (!userId) {
+      throw new AppError("Authentication required", 401);
+    }
+
+    const members = await getProjectMembers(projectId, userId);
+
+    return res.status(200).json({
+      success: true,
+      data: members,
+    });
   } catch (error) {
     next(error);
   }
