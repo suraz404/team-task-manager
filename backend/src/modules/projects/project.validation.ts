@@ -10,3 +10,6 @@ export const addMemberSchema = z.object({
   userId: z.number().int().positive(),
   role: z.enum(["ADMIN", "MANAGER", "MEMBER"]),
 });
+export const updateMemberRoleSchema = z.object({
+  role: z.enum(["ADMIN", "MANAGER", "MEMBER"]),
+});

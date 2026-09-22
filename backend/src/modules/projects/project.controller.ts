@@ -6,6 +6,8 @@ import {
   addProject,
   getProjectById,
   getProjectMembers,
+  removeMemberFromProject,
+  updateMemberRole,
 } from "./project.services.js";
 import { getUserProjects } from "./project.services.js";
 
@@ -113,6 +115,73 @@ export async function getProjectMembersController(
     return res.status(200).json({
       success: true,
       data: members,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateMemberRoleController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const projectId = Number(req.params.projectId);
+    const newUserId = Number(req.params.userId);
+    const currentUserId = req.user?.userId;
+    const role = req.body.role;
+
+    if (Number.isNaN(projectId) || Number.isNaN(newUserId)) {
+      throw new AppError("Invalid project or user ID", 400);
+    }
+
+    if (!currentUserId) {
+      throw new AppError("Authentication required", 401);
+    }
+
+    const member = await updateMemberRole(
+      projectId,
+      currentUserId,
+      newUserId,
+      role,
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: member,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+export async function removeMemberController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const projectId = Number(req.params.projectId);
+    const userIdToRemove = Number(req.params.userId);
+    const currentUserId = req.user?.userId;
+
+    if (Number.isNaN(projectId) || Number.isNaN(userIdToRemove)) {
+      throw new AppError("Invalid project or user ID", 400);
+    }
+
+    if (!currentUserId) {
+      throw new AppError("Authentication required", 401);
+    }
+
+    const member = await removeMemberFromProject(
+      projectId,
+      currentUserId,
+      userIdToRemove,
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: member,
     });
   } catch (error) {
     next(error);

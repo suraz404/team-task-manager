@@ -4,7 +4,11 @@ import { authenticate } from "../../middleware/auth.middleware.js";
 
 import { validate } from "../../middleware/validate.middleware.js";
 
-import { addMemberSchema, createProjectSchema } from "./project.validation.js";
+import {
+  addMemberSchema,
+  createProjectSchema,
+  updateMemberRoleSchema,
+} from "./project.validation.js";
 
 import {
   addMemberController,
@@ -12,6 +16,8 @@ import {
   getProjectMembersController,
   getProjectsController,
   getProjectsControllerById,
+  removeMemberController,
+  updateMemberRoleController,
 } from "./project.controller.js";
 
 const projectRouter = Router();
@@ -47,4 +53,16 @@ projectRouter.get(
   "/:projectId/members",
   authenticate,
   getProjectMembersController,
+);
+projectRouter.patch(
+  "/:projectId/members/:userId",
+  authenticate,
+  validate(updateMemberRoleSchema),
+  updateMemberRoleController,
+);
+
+projectRouter.delete(
+  "/:projectId/members/:userId",
+  authenticate,
+  removeMemberController,
 );

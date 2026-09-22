@@ -4,6 +4,8 @@ import {
   createProject,
   findProjectById,
   findProjectMemberRole,
+  removeProjectMember,
+  updateProjectMemberRole,
 } from "./project.repository.js";
 import { findProjectMembers } from "./project.repository.js";
 export async function addProject(
@@ -64,4 +66,41 @@ export async function getProjectMembers(
   }
 
   return findProjectMembers(projectId);
+}
+
+export async function updateMemberRole(
+  projectId: number,
+  currentUserId: number,
+  newUserId: number,
+  role: ProjectRole,
+) {
+  await requireProjectAdmin(projectId, currentUserId);
+
+  const member = await updateProjectMemberRole(projectId, newUserId, role);
+
+  if (!member) {
+    throw new AppError("Project member not found", 404);
+  }
+
+  return member;
+}
+
+export async function removeMemberFromProject(
+  projectId: number,
+  currentUserId: number,
+  userIdToRemove: number,
+) {
+  await requireProjectAdmin(projectId, currentUserId);
+
+  if (currentUserId === userIdToRemove) {
+    throw new AppError("You cannot remove yourself from the project", 400);
+  }
+
+  const member = await removeProjectMember(projectId, userIdToRemove);
+
+  if (!member) {
+    throw new AppError("Project member not found", 404);
+  }
+
+  return member;
 }

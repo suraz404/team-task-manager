@@ -1,4 +1,5 @@
 import pool from "../../libs/db.js";
+import type { ProjectRole } from "./project.type.js";
 export async function createProject(
   name: string,
   description: string | undefined,
@@ -114,4 +115,34 @@ export async function findProjectMembers(projectId: number) {
   );
 
   return result.rows;
+}
+
+export async function updateProjectMemberRole(
+  projectId: number,
+  userId: number,
+  role: ProjectRole,
+) {
+  const result = await pool.query(
+    `UPDATE project_members
+SET role = $1
+WHERE project_id = $2 
+  AND user_id =$3
+RETURNING *;`,
+    [role, projectId, userId],
+  );
+
+  return result.rows;
+}
+export async function removeProjectMember(projectId: number, userId: number) {
+  const result = await pool.query(
+    `
+    DELETE FROM project_members
+    WHERE project_id = $1
+      AND user_id = $2
+    RETURNING *;
+    `,
+    [projectId, userId],
+  );
+
+  return result.rows[0];
 }
