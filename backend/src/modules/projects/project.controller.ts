@@ -13,8 +13,14 @@ import {
 } from "./project.services.js";
 import { getUserProjects } from "./project.services.js";
 
+type ProjectRequest = Request & {
+  user?: {
+    userId: number;
+  };
+};
+
 export async function createProjectController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -39,7 +45,7 @@ export async function createProjectController(
 }
 
 export async function getProjectsController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -56,7 +62,7 @@ export async function getProjectsController(
 }
 
 export async function getProjectsControllerById(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -74,7 +80,7 @@ export async function getProjectsControllerById(
 }
 
 export async function addMemberController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -96,7 +102,7 @@ export async function addMemberController(
   }
 }
 export async function getProjectMembersController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -124,7 +130,7 @@ export async function getProjectMembersController(
 }
 
 export async function updateMemberRoleController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -158,7 +164,7 @@ export async function updateMemberRoleController(
   }
 }
 export async function removeMemberController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -191,7 +197,7 @@ export async function removeMemberController(
 }
 
 export async function updateProjectController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
@@ -225,7 +231,7 @@ export async function updateProjectController(
   }
 }
 export async function deleteProjectController(
-  req: Request,
+  req: ProjectRequest,
   res: Response,
   next: NextFunction,
 ) {
