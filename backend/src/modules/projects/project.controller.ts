@@ -7,7 +7,9 @@ import {
   getProjectById,
   getProjectMembers,
   removeMemberFromProject,
+  removeProject,
   updateMemberRole,
+  updateProjectDetails,
 } from "./project.services.js";
 import { getUserProjects } from "./project.services.js";
 
@@ -182,6 +184,68 @@ export async function removeMemberController(
     return res.status(200).json({
       success: true,
       data: member,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateProjectController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const projectId = Number(req.params.id);
+    const currentUserId = req.user?.userId;
+
+    if (Number.isNaN(projectId)) {
+      throw new AppError("Invalid project ID", 400);
+    }
+
+    if (!currentUserId) {
+      throw new AppError("Authentication required", 401);
+    }
+
+    const { name, description } = req.body;
+
+    const project = await updateProjectDetails(
+      projectId,
+      currentUserId,
+      name,
+      description,
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: project,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+export async function deleteProjectController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const projectId = Number(req.params.id);
+    const currentUserId = req.user?.userId;
+
+    if (Number.isNaN(projectId)) {
+      throw new AppError("Invalid project ID", 400);
+    }
+
+    if (!currentUserId) {
+      throw new AppError("Authentication required", 401);
+    }
+
+    const project = await removeProject(projectId, currentUserId);
+
+    return res.status(200).json({
+      success: true,
+      data: project,
     });
   } catch (error) {
     next(error);

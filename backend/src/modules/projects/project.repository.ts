@@ -146,3 +146,34 @@ export async function removeProjectMember(projectId: number, userId: number) {
 
   return result.rows[0];
 }
+export async function updateProject(
+  projectId: number,
+  name: string | undefined,
+  description: string | undefined,
+) {
+  const result = await pool.query(
+    `
+    UPDATE projects
+    SET
+      name = COALESCE($1, name),
+      description = COALESCE($2, description)
+    WHERE id = $3
+    RETURNING *;
+    `,
+    [name, description, projectId],
+  );
+
+  return result.rows[0];
+}
+export async function deleteProject(projectId: number) {
+  const result = await pool.query(
+    `
+    DELETE FROM projects
+    WHERE id = $1
+    RETURNING *;
+    `,
+    [projectId],
+  );
+
+  return result.rows[0];
+}

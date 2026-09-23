@@ -8,16 +8,19 @@ import {
   addMemberSchema,
   createProjectSchema,
   updateMemberRoleSchema,
+  updateProjectSchema,
 } from "./project.validation.js";
 
 import {
   addMemberController,
   createProjectController,
+  deleteProjectController,
   getProjectMembersController,
   getProjectsController,
   getProjectsControllerById,
   removeMemberController,
   updateMemberRoleController,
+  updateProjectController,
 } from "./project.controller.js";
 
 const projectRouter = Router();
@@ -66,3 +69,10 @@ projectRouter.delete(
   authenticate,
   removeMemberController,
 );
+projectRouter.patch(
+  "/:id",
+  authenticate,
+  validate(updateProjectSchema),
+  updateProjectController,
+);
+projectRouter.delete("/:id", authenticate, deleteProjectController);

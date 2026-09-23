@@ -2,9 +2,11 @@ import { AppError } from "../../utils/AppError.js";
 import {
   addProjectMember,
   createProject,
+  deleteProject,
   findProjectById,
   findProjectMemberRole,
   removeProjectMember,
+  updateProject,
   updateProjectMemberRole,
 } from "./project.repository.js";
 import { findProjectMembers } from "./project.repository.js";
@@ -103,4 +105,32 @@ export async function removeMemberFromProject(
   }
 
   return member;
+}
+
+export async function updateProjectDetails(
+  projectId: number,
+  currentUserId: number,
+  name: string | undefined,
+  description: string | undefined,
+) {
+  await requireProjectAdmin(projectId, currentUserId);
+
+  const project = await updateProject(projectId, name, description);
+
+  if (!project) {
+    throw new AppError("Project not found", 404);
+  }
+
+  return project;
+}
+export async function removeProject(projectId: number, currentUserId: number) {
+  await requireProjectAdmin(projectId, currentUserId);
+
+  const project = await deleteProject(projectId);
+
+  if (!project) {
+    throw new AppError("Project not found", 404);
+  }
+
+  return project;
 }
