@@ -1,0 +1,4 @@
+ALTER TABLE tasks
+ADD COLUMN project_id INTEGER
+REFERENCES projects(id)
+ON DELETE CASCADE;

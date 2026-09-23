@@ -53,7 +53,7 @@ export async function addMemberToProject(
   newUserId: number,
   role: ProjectRole,
 ) {
-  await requireProjectAdmin(projectId, currentUserId);
+  await requireProjectRole(projectId, currentUserId, ["ADMIN"]);
 
   return addProjectMember(projectId, newUserId, role);
 }
@@ -76,7 +76,7 @@ export async function updateMemberRole(
   newUserId: number,
   role: ProjectRole,
 ) {
-  await requireProjectAdmin(projectId, currentUserId);
+  await requireProjectRole(projectId, currentUserId, ["ADMIN"]);
 
   const member = await updateProjectMemberRole(projectId, newUserId, role);
 
@@ -92,7 +92,7 @@ export async function removeMemberFromProject(
   currentUserId: number,
   userIdToRemove: number,
 ) {
-  await requireProjectAdmin(projectId, currentUserId);
+  await requireProjectRole(projectId, currentUserId, ["ADMIN"]);
 
   if (currentUserId === userIdToRemove) {
     throw new AppError("You cannot remove yourself from the project", 400);
@@ -106,6 +106,35 @@ export async function removeMemberFromProject(
 
   return member;
 }
+export async function requireProjectMember(projectId: number, userId: number) {
+  const membership = await findProjectMemberRole(projectId, userId);
+
+  if (!membership) {
+    throw new AppError("Project not found", 404);
+  }
+
+  return membership;
+}
+export async function requireProjectRole(
+  projectId: number,
+  userId: number,
+  allowedRoles: ProjectRole[],
+) {
+  const membership = await findProjectMemberRole(projectId, userId);
+
+  if (!membership) {
+    throw new AppError("Project not found", 404);
+  }
+
+  if (!allowedRoles.includes(membership.role)) {
+    throw new AppError(
+      "You do not have permission to perform this action",
+      403,
+    );
+  }
+
+  return membership;
+}
 
 export async function updateProjectDetails(
   projectId: number,
@@ -113,7 +142,7 @@ export async function updateProjectDetails(
   name: string | undefined,
   description: string | undefined,
 ) {
-  await requireProjectAdmin(projectId, currentUserId);
+  await requireProjectRole(projectId, currentUserId, ["ADMIN"]);
 
   const project = await updateProject(projectId, name, description);
 

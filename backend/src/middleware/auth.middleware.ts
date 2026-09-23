@@ -5,6 +5,16 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../utils/AppError.js";
 import type { AuthPayload } from "../types/auth.type.js";
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        userId: number;
+      };
+    }
+  }
+}
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 if (!JWT_SECRET) {

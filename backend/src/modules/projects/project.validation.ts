@@ -17,3 +17,8 @@ export const updateProjectSchema = z.object({
   name: z.string().trim().min(1).optional(),
   description: z.string().trim().optional(),
 });
+
+export const createTaskSchema = z.object({
+  title: z.string().trim().min(1, "Task title is required"),
+  assignedTo: z.number().int().positive().nullable().optional(),
+});

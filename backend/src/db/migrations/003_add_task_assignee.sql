@@ -1,0 +1,3 @@
+ALTER TABLE tasks
+ADD COLUMN assigned_to INTEGER
+REFERENCES users(id);

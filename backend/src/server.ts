@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-app.use("/api/tasks", router);
+app.use("/api/projects", router);
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRouter);
 

@@ -7,30 +7,31 @@ import {
   updateTaskController,
   deleteTaskController,
 } from "./task.controller.js";
+
 import { validate } from "../../middleware/validate.middleware.js";
 import { createTaskSchema } from "./task.validation.js";
 import { authenticate } from "../../middleware/auth.middleware.js";
 
 const router = Router();
 
-// GET /api/tasks
-router.get("/", authenticate, getTasksController);
+// GET /api/projects/:projectId/tasks
+router.get("/:projectId/tasks", authenticate, getTasksController);
 
-// GET /api/tasks/:id
-router.get("/:id", authenticate, getTaskController);
+// GET /api/projects/:projectId/tasks/:id
+router.get("/:projectId/tasks/:id", authenticate, getTaskController);
 
-// POST /api/tasks
+// POST /api/projects/:projectId/tasks
 router.post(
-  "/",
+  "/:projectId/tasks",
   authenticate,
   validate(createTaskSchema),
   createTaskController,
 );
 
-// PATCH /api/tasks/:id
-router.patch("/:id", authenticate, updateTaskController);
+// PATCH /api/projects/:projectId/tasks/:id
+router.patch("/:projectId/tasks/:id", authenticate, updateTaskController);
 
-// DELETE /api/tasks/:id
-router.delete("/:id", authenticate, deleteTaskController);
+// DELETE /api/projects/:projectId/tasks/:id
+router.delete("/:projectId/tasks/:id", authenticate, deleteTaskController);
 
 export default router;

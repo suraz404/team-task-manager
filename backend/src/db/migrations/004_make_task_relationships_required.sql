@@ -1,0 +1,3 @@
+ALTER TABLE tasks
+ALTER COLUMN project_id SET NOT NULL,
+ALTER COLUMN created_by SET NOT NULL;
